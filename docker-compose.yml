@@ -1,0 +1,30 @@
+version: "2.1"
+services:
+  piwigo:
+    image: ghcr.io/linuxserver/piwigo
+    container_name: Piwigo
+    environment:
+      - TZ=America/Chicago
+    volumes:
+      - ./config:/config
+      - piwigo-gallery:/gallery/galleries/sdcard
+    ports:
+      - 8654:80
+    restart: always
+  db:
+    image: mysql
+    container_name: Piwigo-DB
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: piwigo
+      MYSQL_DATABASE: piwigo
+      MYSQL_USER: piwigo
+      MYSQL_PASSWORD: piwigo
+    volumes:
+      - ./db_data:/var/lib/mysql
+volumes:
+  piwigo-gallery:
+    driver_opts:
+      type: cifs
+      o: "username=<UN>,password=<PW>,file_mode=0777,dir_mode=0777"
+      device: "//10.0.0.XXX/sdcard"
